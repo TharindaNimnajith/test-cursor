@@ -9,9 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Global CORS configuration for the application.
  * <p>
  * This configuration allows cross-origin requests from the configured frontend
- * origin.
- * The allowed origin can be configured via the {@code app.cors.allowed-origin}
- * property in application.yaml.
+ * origin. The allowed origin can be configured via the
+ * {@code app.cors.allowed-origin} property in application.yaml.
  * </p>
  *
  * @author Tharinda Rajapaksha
@@ -27,7 +26,7 @@ public class CorsConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
 				.allowedOrigins(allowedOrigin)
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				.allowedMethods("GET", "POST", "DELETE")
 				.allowedHeaders("*")
 				.allowCredentials(true)
 				.maxAge(3600);

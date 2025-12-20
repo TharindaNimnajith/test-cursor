@@ -3,13 +3,13 @@ import { ROOM_NAMES } from '../constants';
 
 function AvailabilityGrid({ date, bookings, onCancelBooking }) {
   const [currentTime, setCurrentTime] = useState(null);
-  const rooms = ROOM_NAMES;
-  const startHour = 9;
-  const endHour = 18;
+  const startHour = 0;
+  const endHour = 24;
+  const slotDurationMinutes = 15;
   const timeSlots = [];
 
   for (let hour = startHour; hour < endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += 30) {
+    for (let minute = 0; minute < 60; minute += slotDurationMinutes) {
       const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
       timeSlots.push(time);
     }
@@ -49,7 +49,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
       const bookingStart = parseTime(booking.startTime);
       const bookingEnd = parseTime(booking.endTime);
       const slotTime = parseTime(timeSlot);
-      const nextSlotTime = slotTime + 30; // Each slot is 30 minutes
+      const nextSlotTime = slotTime + slotDurationMinutes; // Each slot duration
       // Slot is booked if it overlaps with booking: slotStart < bookingEnd AND slotEnd > bookingStart
       return slotTime < bookingEnd && nextSlotTime > bookingStart;
     });
@@ -61,7 +61,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
       const bookingStart = parseTime(booking.startTime);
       const bookingEnd = parseTime(booking.endTime);
       const slotTime = parseTime(timeSlot);
-      const nextSlotTime = slotTime + 30;
+      const nextSlotTime = slotTime + slotDurationMinutes;
       // Return booking if slot overlaps with booking
       return slotTime < bookingEnd && nextSlotTime > bookingStart;
     });
@@ -73,8 +73,25 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
     const currentMinutes = currentHour * 60 + currentMin;
     const [slotHour, slotMin] = timeSlot.split(':').map(Number);
     const slotMinutes = slotHour * 60 + slotMin;
-    // Highlight if current time falls within this 30-minute slot
-    return currentMinutes >= slotMinutes && currentMinutes < slotMinutes + 30;
+    // Highlight if current time falls within this time slot
+    return currentMinutes >= slotMinutes && currentMinutes < slotMinutes + slotDurationMinutes;
+  };
+
+  const isPastBooking = (booking) => {
+    // Check if booking is in the past
+    const today = new Date();
+    const bookingDate = new Date(booking.date);
+    bookingDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    if (bookingDate < today) return true;
+    if (bookingDate > today) return false;
+    // Booking is for today - check if start time has passed
+    const now = new Date();
+    const [startHour, startMin] = booking.startTime.split(':').map(Number);
+    const start = new Date(booking.date);
+    start.setHours(startHour, startMin, 0, 0);
+    return start < now;
   };
 
   return (
@@ -91,7 +108,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
           </tr>
         </thead>
         <tbody>
-          {rooms.map((roomName) => (
+          {ROOM_NAMES.map((roomName) => (
             <tr key={roomName}>
               <td className="border border-gray-300 px-4 py-2 bg-gray-50 font-medium">
                 {roomName}
@@ -110,6 +127,10 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
                     title={isBooked ? booking.description : 'Available'}
                     onClick={() => {
                       if (isBooked && booking) {
+                        if (isPastBooking(booking)) {
+                          alert('Cannot cancel past bookings.');
+                          return;
+                        }
                         if (window.confirm(`Cancel booking "${booking.description}" from ${booking.startTime} to ${booking.endTime}?`)) {
                           onCancelBooking(booking.id);
                         }

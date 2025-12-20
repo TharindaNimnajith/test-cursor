@@ -1,6 +1,7 @@
 package com.example.demo.exception;
 
 import com.example.demo.dto.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
  * @version 1.0.0
  */
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
 	/**
@@ -28,6 +30,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(BookingException.class)
 	public ResponseEntity<ErrorResponse> handleBookingException(BookingException ex) {
+		log.error("Booking validation error: {}", ex.getMessage(), ex);
 		ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
@@ -40,6 +43,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+		log.error("Resource not found: {}", ex.getMessage(), ex);
 		ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 	}
@@ -52,6 +56,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+		log.error("Invalid argument: {}", ex.getMessage(), ex);
 		ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
@@ -66,6 +71,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
 			MethodArgumentTypeMismatchException ex) {
 		String message = String.format("Invalid value '%s' for parameter '%s'.", ex.getValue(), ex.getName());
+		log.error("Parameter type mismatch: {}", message, ex);
 		ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
@@ -79,6 +85,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+		log.error("Unexpected error occurred: {}", ex.getMessage(), ex);
 		ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				"An unexpected error occurred.");
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);

@@ -11,8 +11,7 @@ import java.util.List;
  * Repository interface for managing Booking entities.
  * <p>
  * This interface extends JpaRepository to provide CRUD operations and custom
- * query methods
- * for booking data access.
+ * query methods for booking data access.
  * </p>
  *
  * @author Tharinda Rajapaksha

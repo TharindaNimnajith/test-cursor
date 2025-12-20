@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Main application class for the Meeting Room Booking System.
  * <p>
  * This is the entry point for the Spring Boot application. It initializes the
- * Spring context
- * and starts the embedded web server to handle REST API requests.
+ * Spring context and starts the embedded web server to handle REST API
+ * requests.
  * </p>
  *
  * @author Tharinda Rajapaksha

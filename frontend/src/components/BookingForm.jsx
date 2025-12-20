@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { ROOM_NAMES } from '../constants';
 
 function BookingForm({ date, onCreateBooking }) {
-  const rooms = ROOM_NAMES;
   const defaultStartTime = '09:00';
   const defaultEndTime = '10:00';
 
-  const [roomName, setRoomName] = useState(rooms[0]);
+  const [roomName, setRoomName] = useState(ROOM_NAMES[0]);
   const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState(defaultStartTime);
   const [endTime, setEndTime] = useState(defaultEndTime);
@@ -63,7 +62,7 @@ function BookingForm({ date, onCreateBooking }) {
         startTime,
         endTime,
       });
-      setSuccess('Booking created successfully!');
+      setSuccess('Booking created successfully.');
       setDescription('');
       setStartTime(defaultStartTime);
       setEndTime(defaultEndTime);
@@ -86,7 +85,7 @@ function BookingForm({ date, onCreateBooking }) {
             onChange={(e) => setRoomName(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            {rooms.map((name) => (
+            {ROOM_NAMES.map((name) => (
               <option key={name} value={name}>{name}</option>
             ))}
           </select>

@@ -5,6 +5,7 @@ import com.example.demo.exception.BookingException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +17,8 @@ import java.util.List;
  * Service class for managing booking operations.
  * <p>
  * This service handles business logic for booking creation, retrieval, and
- * deletion.
- * It includes validation for booking rules such as time constraints and overlap
- * detection.
+ * deletion. It includes validation for booking rules such as time constraints
+ * and overlap detection.
  * </p>
  *
  * @author Tharinda Rajapaksha
@@ -26,6 +26,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookingService {
 
 	private final BookingRepository bookingRepository;
@@ -55,8 +56,8 @@ public class BookingService {
 	 * @throws BookingException if overlapping validation fails
 	 */
 	@Transactional
-	public Booking createBooking(String roomName, String description, LocalDate date, LocalTime startTime,
-			LocalTime endTime) {
+	public Booking createBooking(String roomName, String description,
+			LocalDate date, LocalTime startTime, LocalTime endTime) {
 		// Check for overlapping bookings
 		List<Booking> existingBookings = bookingRepository.findByRoomNameAndDate(roomName, date);
 		for (Booking existing : existingBookings) {
@@ -66,7 +67,10 @@ public class BookingService {
 		}
 
 		Booking booking = new Booking(roomName, description, date, startTime, endTime);
-		return bookingRepository.save(booking);
+		Booking savedBooking = bookingRepository.save(booking);
+		log.debug("Booking created successfully: ID={}, Room={}, Date={}, Time={}-{}.",
+				savedBooking.getId(), roomName, date, startTime, endTime);
+		return savedBooking;
 	}
 
 	/**
@@ -82,6 +86,7 @@ public class BookingService {
 			throw new ResourceNotFoundException("Booking not found.");
 		}
 		bookingRepository.deleteById(id);
+		log.debug("Booking with ID: {} deleted successfully.", id);
 	}
 
 	/**
