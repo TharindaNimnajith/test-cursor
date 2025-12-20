@@ -5,6 +5,7 @@ spring:
     url: jdbc:sqlite:meeting_rooms.db
     driver-class-name: org.sqlite.JDBC
   jpa:
+    open-in-view: false
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
       ddl-auto: update
@@ -13,5 +14,18 @@ spring:
       hibernate:
         dialect: org.hibernate.community.dialect.SQLiteDialect
         format_sql: true
+  threads:
+    virtual:
+      enabled: true
+
 server:
-  port: 8080
+  servlet:
+    context-path: /api
+
+logging:
+  level:
+    com.example.demo: trace
+
+app:
+  cors:
+    allowed-origin: http://localhost:5173
