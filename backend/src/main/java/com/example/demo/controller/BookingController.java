@@ -36,8 +36,7 @@ public class BookingController {
                     request.getRoomId(),
                     request.getDate(),
                     request.getStartTime(),
-                    request.getEndTime()
-            );
+                    request.getEndTime());
             return ResponseEntity.status(HttpStatus.CREATED).body(booking);
         } catch (IllegalArgumentException e) {
             Map<String, String> error = new HashMap<>();

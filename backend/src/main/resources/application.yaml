@@ -1,6 +1,6 @@
 spring:
   application:
-    name: demo
+    name: meeting-room-booking-system
   datasource:
     url: jdbc:sqlite:meeting_rooms.db
     driver-class-name: org.sqlite.JDBC

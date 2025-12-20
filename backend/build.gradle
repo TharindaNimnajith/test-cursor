@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.example'
 version = '1.0.0'
-description = 'Demo project for Spring Boot'
+description = 'Meeting Room Booking System'
 
 java {
 	toolchain {

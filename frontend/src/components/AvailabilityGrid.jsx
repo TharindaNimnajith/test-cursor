@@ -6,7 +6,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
   const startHour = 8;
   const endHour = 18;
   const timeSlots = [];
-  
+
   for (let hour = startHour; hour < endHour; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
@@ -21,7 +21,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
       today.setHours(0, 0, 0, 0);
       const selectedDate = new Date(date);
       selectedDate.setHours(0, 0, 0, 0);
-      
+
       if (today.getTime() === selectedDate.getTime()) {
         const hours = now.getHours();
         const minutes = now.getMinutes();
@@ -99,7 +99,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
                 const isBooked = isTimeSlotBooked(roomId, timeSlot);
                 const booking = getBookingForSlot(roomId, timeSlot);
                 const isCurrent = isCurrentTime(timeSlot);
-                
+
                 return (
                   <td
                     key={timeSlot}
@@ -116,9 +116,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
                         }
                       }
                     }}
-                  >
-                    {isBooked ? '●' : ''}
-                  </td>
+                  />
                 );
               })}
             </tr>
