@@ -5,7 +5,7 @@ A simple single-page web application for booking meeting rooms in an office envi
 ## Tech Stack
 
 - **Frontend**: React (JavaScript) + Tailwind CSS
-- **Backend**: Spring Boot (Java 21)
+- **Backend**: Spring Boot (Java 25)
 - **Database**: SQLite
 - **API**: REST
 
@@ -44,7 +44,7 @@ A simple single-page web application for booking meeting rooms in an office envi
 
 ## Prerequisites
 
-- Java 21 JDK
+- Java 25 JDK
 - Node.js (v16 or higher)
 - npm or yarn
 
@@ -168,8 +168,8 @@ The application uses SQLite with automatic schema creation. The database file (`
 
 ## Development Notes
 
-- The backend uses Spring Boot 3.2.0 with Java 21
+- The backend uses Spring Boot 4.1.0 with Java 25
 - The frontend uses Vite as the build tool
 - Tailwind CSS is used for styling
 - CORS is configured to allow requests from `http://localhost:5173`
-- The availability grid shows 30-minute time slots from 08:00 to 18:00
+- The availability grid shows 30-minute time slots from 09:00 to 18:00

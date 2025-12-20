@@ -4,7 +4,7 @@ You are a senior full stack engineer.
 
 Build a simple meeting room booking web application using the following stack:
 Frontend: React (JavaScript) + Tailwind CSS
-Backend: Spring Boot (Java 21)
+Backend: Spring Boot (Java 25)
 Database: SQLite
 API style: REST
 
