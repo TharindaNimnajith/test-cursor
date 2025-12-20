@@ -23,4 +23,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.xerial:sqlite-jdbc'
 	implementation 'org.hibernate.orm:hibernate-community-dialects'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('bootRun') {
+	jvmArgs = [
+		'--enable-native-access=ALL-UNNAMED',
+		'--sun-misc-unsafe-memory-access=allow'
+	]
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.fork = true
+	options.forkOptions.jvmArgs += ['--sun-misc-unsafe-memory-access=allow']
 }

@@ -1,47 +1,47 @@
 package com.example.demo.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * Data Transfer Object (DTO) for creating a new booking.
+ * <p>
+ * This DTO is used to receive booking creation requests from the client.
+ * It contains all the necessary information to create a booking.
+ * </p>
+ *
+ * @author Tharinda Rajapaksha
+ * @version 1.0.0
+ */
+@Getter
+@Setter
 public class BookingRequest {
 
+    /**
+     * The ID of the meeting room to book.
+     * Must be between 1 and 7 (inclusive).
+     */
     private Integer roomId;
+
+    /**
+     * The date for the booking.
+     * Format: YYYY-MM-DD
+     */
     private LocalDate date;
+
+    /**
+     * The start time of the booking.
+     * Format: HH:mm
+     */
     private LocalTime startTime;
+
+    /**
+     * The end time of the booking.
+     * Format: HH:mm
+     * Must be after the start time.
+     */
     private LocalTime endTime;
-
-    public BookingRequest() {
-    }
-
-    public Integer getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
 }
