@@ -15,7 +15,7 @@ A simple single-page web application for booking meeting rooms in an office envi
 - Create bookings by selecting room, date, start time, and end time
 - Cancel existing bookings
 - Real-time availability updates
-- Visual timeline view (08:00-18:00) with color-coded slots
+- Visual timeline view (09:00-18:00) with color-coded slots
 - Current time highlighting on today's schedule
 - Overlap validation (prevents double-booking)
 
@@ -30,7 +30,9 @@ A simple single-page web application for booking meeting rooms in an office envi
 │   │       │   ├── repository/  # BookingRepository
 │   │       │   ├── service/     # BookingService with validation
 │   │       │   ├── controller/  # REST controllers
-│   │       │   └── dto/         # Request DTOs
+│   │       │   ├── config/      # CORS configuration
+│   │       │   ├── exception/   # Custom exceptions and global handler
+│   │       │   └── dto/         # Request DTOs & error response
 │   │       └── resources/
 │   │           └── application.yaml
 │   └── build.gradle
@@ -56,13 +58,11 @@ A simple single-page web application for booking meeting rooms in an office envi
    ```bash
    cd backend
    ```
-
 2. Build the project:
    ```bash
    ./gradlew build
    ```
    (On Windows: `gradlew.bat build`)
-
 3. Run the Spring Boot application:
    ```bash
    ./gradlew bootRun
@@ -70,8 +70,22 @@ A simple single-page web application for booking meeting rooms in an office envi
    (On Windows: `gradlew.bat bootRun`)
 
    The backend will start on `http://localhost:8080`
-
    The SQLite database (`meeting_rooms.db`) will be automatically created in the backend directory on first run.
+
+#### Backend Details
+
+- Provides a REST API for managing meeting rooms and bookings
+- Booking-related errors and resource-not-found situations return standard error responses
+- Cross-Origin Resource Sharing (CORS) is configured globally via `application.yaml`
+- Input validation and business rules are enforced on the backend
+
+**Example Error Response:**
+```
+{
+  "status": 404,
+  "message": "Booking not found"
+}
+```
 
 ### Frontend Setup
 
@@ -79,12 +93,10 @@ A simple single-page web application for booking meeting rooms in an office envi
    ```bash
    cd frontend
    ```
-
 2. Install dependencies:
    ```bash
    npm install
    ```
-
 3. Start the development server:
    ```bash
    npm run dev
@@ -171,5 +183,5 @@ The application uses SQLite with automatic schema creation. The database file (`
 - The backend uses Spring Boot 4.1.0 with Java 25
 - The frontend uses Vite as the build tool
 - Tailwind CSS is used for styling
-- CORS is configured to allow requests from `http://localhost:5173`
+- CORS is configured to allow requests from the frontend origin set in `application.yaml`
 - The availability grid shows 30-minute time slots from 09:00 to 18:00

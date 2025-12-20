@@ -51,17 +51,14 @@ function App() {
         <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
           Meeting Room Booking System
         </h1>
-
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <DatePicker date={date} onDateChange={setDate} />
         </div>
-
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
             {error}
           </div>
         )}
-
         {loading ? (
           <div className="text-center py-8">Loading...</div>
         ) : (
@@ -74,7 +71,6 @@ function App() {
             />
           </div>
         )}
-
         <BookingForm date={date} onCreateBooking={handleCreateBooking} />
       </div>
     </div>

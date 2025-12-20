@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import { ROOM_NAMES } from '../constants';
 
 function AvailabilityGrid({ date, bookings, onCancelBooking }) {
   const [currentTime, setCurrentTime] = useState(null);
-  const rooms = [1, 2, 3, 4, 5, 6, 7];
-  const startHour = 8;
+  const rooms = ROOM_NAMES;
+  const startHour = 9;
   const endHour = 18;
   const timeSlots = [];
 
@@ -37,14 +38,14 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
   }, [date]);
 
   const parseTime = (timeStr) => {
-    // Handle both "HH:mm" and "HH:mm:ss" formats
+    // Handle both 'HH:mm' and 'HH:mm:ss' formats
     const parts = timeStr.substring(0, 5).split(':');
     return parseInt(parts[0]) * 60 + parseInt(parts[1]); // Convert to minutes
   };
 
-  const isTimeSlotBooked = (roomId, timeSlot) => {
+  const isTimeSlotBooked = (roomName, timeSlot) => {
     return bookings.some(booking => {
-      if (booking.roomId !== roomId) return false;
+      if (booking.roomName !== roomName) return false;
       const bookingStart = parseTime(booking.startTime);
       const bookingEnd = parseTime(booking.endTime);
       const slotTime = parseTime(timeSlot);
@@ -54,9 +55,9 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
     });
   };
 
-  const getBookingForSlot = (roomId, timeSlot) => {
+  const getBookingForSlot = (roomName, timeSlot) => {
     return bookings.find(booking => {
-      if (booking.roomId !== roomId) return false;
+      if (booking.roomName !== roomName) return false;
       const bookingStart = parseTime(booking.startTime);
       const bookingEnd = parseTime(booking.endTime);
       const slotTime = parseTime(timeSlot);
@@ -90,28 +91,26 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
           </tr>
         </thead>
         <tbody>
-          {rooms.map(roomId => (
-            <tr key={roomId}>
+          {rooms.map((roomName) => (
+            <tr key={roomName}>
               <td className="border border-gray-300 px-4 py-2 bg-gray-50 font-medium">
-                Room {roomId}
+                {roomName}
               </td>
               {timeSlots.map(timeSlot => {
-                const isBooked = isTimeSlotBooked(roomId, timeSlot);
-                const booking = getBookingForSlot(roomId, timeSlot);
+                const isBooked = isTimeSlotBooked(roomName, timeSlot);
+                const booking = getBookingForSlot(roomName, timeSlot);
                 const isCurrent = isCurrentTime(timeSlot);
 
                 return (
                   <td
                     key={timeSlot}
-                    className={`border border-gray-300 px-1 py-1 ${
-                      isBooked
-                        ? 'bg-red-200 hover:bg-red-300 cursor-pointer'
-                        : 'bg-green-100'
-                    } ${isCurrent ? 'ring-2 ring-blue-500 ring-inset' : ''}`}
-                    title={isBooked ? `Booked: ${booking.startTime} - ${booking.endTime}` : 'Available'}
+                    className={`border border-gray-300 px-1 py-1
+                       ${isBooked ? 'bg-red-200 hover:bg-red-300 cursor-pointer' : 'bg-green-100'}
+                       ${isCurrent ? 'ring-2 ring-blue-500 ring-inset' : ''}`}
+                    title={isBooked ? booking.description : 'Available'}
                     onClick={() => {
                       if (isBooked && booking) {
-                        if (window.confirm(`Cancel booking from ${booking.startTime} to ${booking.endTime}?`)) {
+                        if (window.confirm(`Cancel booking "${booking.description}" from ${booking.startTime} to ${booking.endTime}?`)) {
                           onCancelBooking(booking.id);
                         }
                       }

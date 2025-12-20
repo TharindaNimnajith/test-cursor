@@ -1,12 +1,6 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+import { API_BASE_URL } from '../constants';
 
 export const api = {
-  async getRooms() {
-    const response = await fetch(`${API_BASE_URL}/rooms`);
-    if (!response.ok) throw new Error('Failed to fetch rooms');
-    return response.json();
-  },
-
   formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -17,7 +11,7 @@ export const api = {
   async getBookings(date) {
     const dateStr = this.formatDate(date);
     const response = await fetch(`${API_BASE_URL}/bookings?date=${dateStr}`);
-    if (!response.ok) throw new Error('Failed to fetch bookings');
+    if (!response.ok) throw new Error('Failed to fetch bookings.');
     return response.json();
   },
 
@@ -28,7 +22,8 @@ export const api = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        roomId: booking.roomId,
+        roomName: booking.roomName,
+        description: booking.description,
         date: this.formatDate(booking.date),
         startTime: booking.startTime,
         endTime: booking.endTime,
@@ -36,7 +31,7 @@ export const api = {
     });
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || 'Failed to create booking');
+      throw new Error(data.message || 'Failed to create booking.');
     }
     return data;
   },
@@ -47,7 +42,7 @@ export const api = {
     });
     if (!response.ok) {
       const data = await response.json();
-      throw new Error(data.error || 'Failed to delete booking');
+      throw new Error(data.message || 'Failed to delete booking.');
     }
   },
 };

@@ -32,10 +32,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     /**
      * Finds all bookings for a specific room on a specific date.
      *
-     * @param roomId the ID of the room (1-7)
-     * @param date   the date to search for bookings
+     * @param roomName the name of the room
+     * @param date     the date to search for bookings
      * @return a list of bookings for the specified room and date, empty list if
      *         none found
      */
-    List<Booking> findByRoomIdAndDate(Integer roomId, LocalDate date);
+    List<Booking> findByRoomNameAndDate(String roomName, LocalDate date);
 }

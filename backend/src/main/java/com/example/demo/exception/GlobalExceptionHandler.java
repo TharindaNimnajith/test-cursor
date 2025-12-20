@@ -65,7 +65,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
 			MethodArgumentTypeMismatchException ex) {
-		String message = String.format("Invalid value '%s' for parameter '%s'", ex.getValue(), ex.getName());
+		String message = String.format("Invalid value '%s' for parameter '%s'.", ex.getValue(), ex.getName());
 		ErrorResponse error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 	}
@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
 		ErrorResponse error = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-				"An unexpected error occurred");
+				"An unexpected error occurred.");
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
 	}
 }

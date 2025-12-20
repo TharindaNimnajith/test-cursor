@@ -34,7 +34,7 @@ Booking validation must be enforced on the backend.
 Availability View
 User selects a date.
 Show all 7 meeting rooms.
-For each room, show a daily timeline view (for example 08:00–18:00).
+For each room, show a daily timeline view (for example 09:00–18:00).
 
 Clearly display:
 Booked slots

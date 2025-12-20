@@ -58,7 +58,8 @@ public class BookingController {
 	@PostMapping
 	public ResponseEntity<Booking> createBooking(@RequestBody BookingRequest request) {
 		Booking booking = bookingService.createBooking(
-				request.getRoomId(),
+				request.getRoomName(),
+				request.getDescription(),
 				request.getDate(),
 				request.getStartTime(),
 				request.getEndTime());

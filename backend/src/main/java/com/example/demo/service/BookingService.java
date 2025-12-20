@@ -43,44 +43,29 @@ public class BookingService {
 	/**
 	 * Creates a new booking with validation.
 	 * <p>
-	 * Validates the following rules:
-	 * <ul>
-	 * <li>End time must be after start time</li>
-	 * <li>Room ID must be between 1 and 7</li>
-	 * <li>No overlapping bookings for the same room and date</li>
-	 * </ul>
+	 * Validates overlapping bookings for the same room and date.
 	 * </p>
 	 *
-	 * @param roomId    the ID of the room to book (1-7)
-	 * @param date      the date of the booking
-	 * @param startTime the start time of the booking
-	 * @param endTime   the end time of the booking
+	 * @param roomName    the name of the room to book
+	 * @param description the description of the booking
+	 * @param date        the date of the booking
+	 * @param startTime   the start time of the booking
+	 * @param endTime     the end time of the booking
 	 * @return the created booking entity
-	 * @throws BookingException if validation fails (invalid times, room ID, or
-	 *                          overlap
-	 *                          detected)
+	 * @throws BookingException if overlapping validation fails
 	 */
 	@Transactional
-	public Booking createBooking(Integer roomId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-		// Validate end time is after start time
-		if (!endTime.isAfter(startTime)) {
-			throw new BookingException("End time must be after start time");
-		}
-
-		// Validate room ID is between 1 and 7
-		if (roomId < 1 || roomId > 7) {
-			throw new BookingException("Room ID must be between 1 and 7");
-		}
-
+	public Booking createBooking(String roomName, String description, LocalDate date, LocalTime startTime,
+			LocalTime endTime) {
 		// Check for overlapping bookings
-		List<Booking> existingBookings = bookingRepository.findByRoomIdAndDate(roomId, date);
+		List<Booking> existingBookings = bookingRepository.findByRoomNameAndDate(roomName, date);
 		for (Booking existing : existingBookings) {
 			if (hasOverlap(startTime, endTime, existing.getStartTime(), existing.getEndTime())) {
-				throw new BookingException("Booking overlaps with an existing booking");
+				throw new BookingException("Booking overlaps with an existing booking.");
 			}
 		}
 
-		Booking booking = new Booking(roomId, date, startTime, endTime);
+		Booking booking = new Booking(roomName, description, date, startTime, endTime);
 		return bookingRepository.save(booking);
 	}
 
@@ -94,7 +79,7 @@ public class BookingService {
 	@Transactional
 	public void deleteBooking(Long id) {
 		if (!bookingRepository.existsById(id)) {
-			throw new ResourceNotFoundException("Booking not found");
+			throw new ResourceNotFoundException("Booking not found.");
 		}
 		bookingRepository.deleteById(id);
 	}

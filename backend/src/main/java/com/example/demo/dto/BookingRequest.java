@@ -21,10 +21,14 @@ import java.time.LocalTime;
 public class BookingRequest {
 
     /**
-     * The ID of the meeting room to book.
-     * Must be between 1 and 7 (inclusive).
+     * The name of the meeting room to book.
      */
-    private Integer roomId;
+    private String roomName;
+
+    /**
+     * The description of the booking.
+     */
+    private String description;
 
     /**
      * The date for the booking.
