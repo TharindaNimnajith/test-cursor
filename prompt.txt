@@ -1,0 +1,134 @@
+SYSTEM / PROJECT PROMPT
+
+You are a senior full stack engineer.
+
+Build a simple meeting room booking web application using the following stack:
+Frontend: React (JavaScript) + Tailwind CSS
+Backend: Spring Boot (Java 21)
+Database: SQLite
+API style: REST
+
+This is a single page internal office tool. No authentication is required.
+
+
+FUNCTIONAL REQUIREMENTS
+
+Meeting Rooms
+The office has exactly 7 meeting rooms:
+Room 1, Room 2, Room 3, Room 4, Room 5, Room 6, Room 7
+Room list is static and predefined.
+
+Booking
+Users must be able to create a booking by selecting:
+Meeting room
+Date
+Start time
+End time
+
+Rules
+End time must be strictly after start time.
+Overlapping bookings for the same room and same date are not allowed.
+Different rooms can be booked at the same time.
+Booking validation must be enforced on the backend.
+
+Availability View
+User selects a date.
+Show all 7 meeting rooms.
+For each room, show a daily timeline view (for example 08:00–18:00).
+
+Clearly display:
+Booked slots
+Available slots
+Availability must update immediately after booking or cancellation.
+
+Cancel Booking
+Users must be able to cancel an existing booking.
+Availability must refresh instantly after cancellation.
+
+
+USER INTERFACE REQUIREMENTS
+
+Single page UI.
+
+Sections:
+Date picker
+Availability grid for all rooms
+Booking form
+
+Color coding:
+Booked slots: red or gray
+Available slots: green or white
+
+Highlight the current time on today’s schedule.
+Show clear success or error messages for booking actions.
+
+Desktop browser only.
+
+
+BACKEND REQUIREMENTS
+
+Entities
+Booking
+id
+roomId (1–7)
+date (YYYY MM DD)
+startTime (HH:mm)
+endTime (HH:mm)
+
+Database
+Use SQLite.
+Auto create schema on startup.
+Persist bookings.
+
+
+REST API
+
+Implement the following endpoints:
+
+GET /api/rooms
+Returns static list of 7 rooms
+
+GET /api/bookings?date=YYYY-MM-DD
+Returns all bookings for the given date
+
+POST /api/bookings
+Creates a booking
+Validates overlapping bookings
+Returns error if invalid
+
+DELETE /api/bookings/{id}
+Cancels a booking
+
+Overlap Logic
+Two bookings overlap if:
+newStart < existingEnd AND newEnd > existingStart
+
+
+FRONTEND REQUIREMENTS
+
+React with functional components and hooks.
+Tailwind CSS for layout and basic styling.
+Fetch data from backend APIs.
+Re render availability grid after booking or cancellation.
+No authentication.
+Keep UI clean and readable.
+
+
+DELIVERABLES
+
+Generate:
+Spring Boot backend project structure
+JPA entities, repositories, services, controllers
+SQLite configuration
+React frontend structure
+Main React components
+API integration
+Clear instructions on how to run frontend and backend locally
+
+
+CONSTRAINTS
+
+Keep the solution simple and readable.
+Avoid unnecessary abstractions.
+Prioritize correctness over visual polish.
+Analyse the base setup added already in backend and frontend firectories and add code on top of it.
