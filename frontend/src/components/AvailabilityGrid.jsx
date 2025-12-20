@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ROOM_NAMES } from '../constants';
+import { ROOM_NAMES, TIME_GRID_START_HOUR, TIME_GRID_END_HOUR, SLOT_DURATION_MINUTES } from '../constants';
 
 function AvailabilityGrid({ date, bookings, onCancelBooking }) {
   const [currentTime, setCurrentTime] = useState(null);
-  const startHour = 0;
-  const endHour = 24;
-  const slotDurationMinutes = 15;
   const timeSlots = [];
 
-  for (let hour = startHour; hour < endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += slotDurationMinutes) {
+  for (let hour = TIME_GRID_START_HOUR; hour < TIME_GRID_END_HOUR; hour++) {
+    for (let minute = 0; minute < 60; minute += SLOT_DURATION_MINUTES) {
       const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
       timeSlots.push(time);
     }
@@ -49,7 +46,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
       const bookingStart = parseTime(booking.startTime);
       const bookingEnd = parseTime(booking.endTime);
       const slotTime = parseTime(timeSlot);
-      const nextSlotTime = slotTime + slotDurationMinutes; // Each slot duration
+      const nextSlotTime = slotTime + SLOT_DURATION_MINUTES; // Each slot duration
       // Slot is booked if it overlaps with booking: slotStart < bookingEnd AND slotEnd > bookingStart
       return slotTime < bookingEnd && nextSlotTime > bookingStart;
     });
@@ -61,7 +58,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
       const bookingStart = parseTime(booking.startTime);
       const bookingEnd = parseTime(booking.endTime);
       const slotTime = parseTime(timeSlot);
-      const nextSlotTime = slotTime + slotDurationMinutes;
+      const nextSlotTime = slotTime + SLOT_DURATION_MINUTES;
       // Return booking if slot overlaps with booking
       return slotTime < bookingEnd && nextSlotTime > bookingStart;
     });
@@ -74,7 +71,7 @@ function AvailabilityGrid({ date, bookings, onCancelBooking }) {
     const [slotHour, slotMin] = timeSlot.split(':').map(Number);
     const slotMinutes = slotHour * 60 + slotMin;
     // Highlight if current time falls within this time slot
-    return currentMinutes >= slotMinutes && currentMinutes < slotMinutes + slotDurationMinutes;
+    return currentMinutes >= slotMinutes && currentMinutes < slotMinutes + SLOT_DURATION_MINUTES;
   };
 
   const isPastBooking = (booking) => {

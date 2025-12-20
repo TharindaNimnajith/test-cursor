@@ -1,14 +1,11 @@
 import { useState } from 'react';
-import { ROOM_NAMES } from '../constants';
+import { ROOM_NAMES, DEFAULT_START_TIME, DEFAULT_END_TIME } from '../constants';
 
 function BookingForm({ date, onCreateBooking }) {
-  const defaultStartTime = '09:00';
-  const defaultEndTime = '10:00';
-
   const [roomName, setRoomName] = useState(ROOM_NAMES[0]);
   const [description, setDescription] = useState('');
-  const [startTime, setStartTime] = useState(defaultStartTime);
-  const [endTime, setEndTime] = useState(defaultEndTime);
+  const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
+  const [endTime, setEndTime] = useState(DEFAULT_END_TIME);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -21,7 +18,7 @@ function BookingForm({ date, onCreateBooking }) {
 
     if (bookingDate < today) return true;
     if (bookingDate > today) return false;
-    // Booking is for today:
+    // Booking is for today - check if start time has passed
     const now = new Date();
     const [startHour, startMin] = startTime.split(':').map(Number);
     const start = new Date(date);
@@ -64,8 +61,8 @@ function BookingForm({ date, onCreateBooking }) {
       });
       setSuccess('Booking created successfully.');
       setDescription('');
-      setStartTime(defaultStartTime);
-      setEndTime(defaultEndTime);
+      setStartTime(DEFAULT_START_TIME);
+      setEndTime(DEFAULT_END_TIME);
     } catch (err) {
       setError(err.message || 'Failed to create booking.');
     }

@@ -1,5 +1,11 @@
-### IntelliJ IDEA ###
-.idea
+# Global Git Ignore Patterns
+# This file contains patterns that apply to the entire repository
 
-### VS Code ###
+### IntelliJ IDEA ###
+.idea/
+
+### Visual Studio Code ###
 .vscode/
+
+### System Files ###
+.DS_Store

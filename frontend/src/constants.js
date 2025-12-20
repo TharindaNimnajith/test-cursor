@@ -11,3 +11,12 @@ export const ROOM_NAMES = [
   'Air Room',
   'Game Room'
 ];
+
+// Booking Defaults
+export const DEFAULT_START_TIME = '09:00';
+export const DEFAULT_END_TIME = '10:00';
+
+// Time Grid Configuration
+export const TIME_GRID_START_HOUR = 0;
+export const TIME_GRID_END_HOUR = 24;
+export const SLOT_DURATION_MINUTES = 15;

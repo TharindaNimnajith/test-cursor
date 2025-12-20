@@ -1,19 +1,26 @@
+# Backend-Specific Git Ignore Patterns
+# This file contains patterns specific to the Spring Boot backend application
+
+### Build Artifacts and Dependencies ###
 HELP.md
-.gradle
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### Database ###
+### Database Files ###
 *.db
+*.db-journal
+*.db-shm
+*.db-wal
 
-### STS ###
+### Spring Tool Suite (STS) ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 bin/
@@ -21,7 +28,6 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
 *.iws
 *.iml
 *.ipr
@@ -35,6 +41,3 @@ out/
 /dist/
 /nbdist/
 /.nb-gradle/
-
-### VS Code ###
-.vscode/
