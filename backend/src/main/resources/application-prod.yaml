@@ -2,4 +2,4 @@
 
 app:
   cors:
-    allowed-origin: http://localhost  # Frontend origin allowed for CORS
+    allowed-origin: https://meeting-room-frontend.fly.dev  # Frontend origin allowed for CORS

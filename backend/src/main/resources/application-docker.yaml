@@ -1,0 +1,5 @@
+# Docker environment configuration overrides
+
+app:
+  cors:
+    allowed-origin: http://localhost  # Frontend origin allowed for CORS

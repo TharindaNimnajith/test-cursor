@@ -1,7 +1,7 @@
 # -----------------------------
 # Builder stage (Node.js)
 # -----------------------------
-FROM node:18-alpine AS builder
+FROM node:lts-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -26,11 +26,11 @@ FROM nginx:alpine
 # Copy the built frontend from the builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy custom Nginx configuration template
+COPY nginx.conf.template /etc/nginx/conf.d/default.conf.template
 
 # Expose port 80 for HTTP
 EXPOSE 80
 
-# Start Nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Start Nginx with envsubst to replace $BACKEND_URL
+CMD envsubst '$BACKEND_URL' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'

@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"  # Expose backend on localhost:8080
     environment:
-      - SPRING_PROFILES_ACTIVE=prod  # Activate production profile
+      - SPRING_PROFILES_ACTIVE=docker  # Activate docker profile
     volumes:
       - db-data:/app/data  # Persist SQLite database
     networks:
@@ -18,6 +18,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"  # Expose frontend on localhost:80
+    environment:
+      - BACKEND_URL=http://backend:8080  # Inject backend URL into Nginx template
     depends_on:
       - backend  # Ensure backend starts first
     networks:
