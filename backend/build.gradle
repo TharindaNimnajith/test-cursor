@@ -29,14 +29,18 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 }
 
+// bootRun JVM arguments
 tasks.named('bootRun') {
+	// These JVM args are needed to suppress the SQLite restricted method warnings
 	jvmArgs = [
 		'--enable-native-access=ALL-UNNAMED',
 		'--sun-misc-unsafe-memory-access=allow'
 	]
 }
 
+// Compile options for JavaCompile tasks
 tasks.withType(JavaCompile).configureEach {
+	// Fork compilation to separate JVM to allow custom JVM arguments
 	options.fork = true
 	options.forkOptions.jvmArgs += ['--sun-misc-unsafe-memory-access=allow']
 }

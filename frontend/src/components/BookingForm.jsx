@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { ROOM_NAMES, DEFAULT_START_TIME, DEFAULT_END_TIME } from '../constants';
+import { ROOM_NAMES } from '../constants';
 
 function BookingForm({ date, onCreateBooking }) {
   const [roomName, setRoomName] = useState(ROOM_NAMES[0]);
   const [description, setDescription] = useState('');
-  const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
-  const [endTime, setEndTime] = useState(DEFAULT_END_TIME);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -61,8 +61,8 @@ function BookingForm({ date, onCreateBooking }) {
       });
       setSuccess('Booking created successfully.');
       setDescription('');
-      setStartTime(DEFAULT_START_TIME);
-      setEndTime(DEFAULT_END_TIME);
+      setStartTime('');
+      setEndTime('');
     } catch (err) {
       setError(err.message || 'Failed to create booking.');
     }

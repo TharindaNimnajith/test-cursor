@@ -1,31 +1,28 @@
+# Common/default configurations for all environments
+
 spring:
   application:
     name: meeting-room-booking-system
   datasource:
-    url: jdbc:sqlite:meeting_rooms.db
+    url: jdbc:sqlite:meeting_rooms.db  # SQLite database file
     driver-class-name: org.sqlite.JDBC
   jpa:
     open-in-view: false
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: update  # Auto-update schema
     properties:
       hibernate:
         dialect: org.hibernate.community.dialect.SQLiteDialect
-        format_sql: true
+        format_sql: true  # Make SQL logs readable
   threads:
     virtual:
-      enabled: true
+      enabled: true  # Enable Java virtual threads
 
 server:
   servlet:
-    context-path: /api
+    context-path: /api  # Have all endpoints under /api
 
 logging:
   level:
-    com.example.demo: trace
-
-app:
-  cors:
-    allowed-origin: http://localhost:5173
+    com.example.demo: trace  # Enable trace logs for the Spring Boot application
