@@ -1,4 +1,4 @@
-# Production environment configuration overrides
+# Production environment configuration overrides for fly.io
 
 app:
   cors:

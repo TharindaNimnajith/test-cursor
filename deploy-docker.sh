@@ -24,19 +24,19 @@ cd ..
 # Stop old containers
 # -----------------------------
 echo "🛑 Stopping old containers..."
-docker-compose down
+docker-compose -f docker-compose.yml -f docker-compose.docker.yml down
 
 # -----------------------------
 # Build Docker images
 # -----------------------------
 echo "🐳 Building Docker images..."
-docker-compose build --no-cache
+docker-compose -f docker-compose.yml -f docker-compose.docker.yml build --no-cache
 
 # -----------------------------
 # Start services
 # -----------------------------
 echo "🚀 Starting services..."
-docker-compose up -d
+docker-compose -f docker-compose.yml -f docker-compose.docker.yml up -d
 
 # -----------------------------
 # Prune dangling images
@@ -50,9 +50,9 @@ docker image prune -f
 echo "✅ Deployment complete."
 echo "Frontend: http://localhost"
 echo "Backend API: http://localhost:8080/api"
-echo "View logs with: docker-compose logs -f"
+echo "View logs with: docker-compose -f docker-compose.yml -f docker-compose.docker.yml logs -f"
 
 # -----------------------------
 # Logs
 # -----------------------------
-docker-compose logs -f
+docker-compose -f docker-compose.yml -f docker-compose.docker.yml logs -f
