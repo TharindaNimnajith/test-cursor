@@ -1,7 +1,8 @@
 // API Configuration
 // export const API_BASE_URL = 'http://localhost:8080/api';
 // export const API_BASE_URL = 'https://meeting-room-backend.fly.dev/api';
-export const API_BASE_URL = 'https://<your-droplet-domain-or-ip>/api';
+// export const API_BASE_URL = 'https://<your-droplet-domain-or-ip>/api';
+export const API_BASE_URL = 'import.meta.env.API_BASE_URL';
 
 // Room Names
 export const ROOM_NAMES = [
