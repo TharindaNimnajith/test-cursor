@@ -4,7 +4,7 @@ spring:
   application:
     name: meeting-room-booking-system
   datasource:
-    url: jdbc:sqlite:meeting_rooms.db  # SQLite database file
+    url: jdbc:sqlite:/app/data/meeting_rooms.db  # Docker: persisted via /app/data volume
     driver-class-name: org.sqlite.JDBC
   jpa:
     open-in-view: false

@@ -1,5 +1,7 @@
 # Local development environment configuration overrides
 
 spring:
+  datasource:
+    url: jdbc:sqlite:meeting_rooms.db  # Local: relative path in backend working directory
   jpa:
     show-sql: true  # Show SQL statements in logs for debugging

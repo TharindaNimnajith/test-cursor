@@ -5,7 +5,7 @@ A modern single-page web application for booking meeting rooms in an office envi
 ## Tech Stack
 
 - **Frontend**: React 19 + Vite + Tailwind CSS
-- **Backend**: Spring Boot 4.0.1 (Java 25)
+- **Backend**: Spring Boot 4 (Java 25)
 - **Database**: SQLite with JPA/Hibernate
 - **API**: REST with comprehensive error handling
 
@@ -16,7 +16,7 @@ A modern single-page web application for booking meeting rooms in an office envi
 - **Booking with Descriptions**: Create bookings with meaningful descriptions (minimum 3 characters)
 - **Comprehensive Validation**:
   - Frontend: Description requirements, time validation, past booking prevention
-  - Backend: Overlap detection, business rule enforcement
+  - Backend: Overlap detection to prevent double-booking
 - **Visual Timeline**: Configurable time slots with color-coded availability
 - **Current Time Highlighting**: Visual indicator shows current time slot on today's schedule
 - **Easy Cancellation**: Click booked slots to cancel with confirmation (past bookings protected)
@@ -31,95 +31,50 @@ A modern single-page web application for booking meeting rooms in an office envi
 │   │   ├── controller/         # REST API endpoints
 │   │   ├── entity/             # JPA entities
 │   │   ├── repository/         # Data access layer
-│   │   ├── service/            # Business logic with validation
+│   │   ├── service/            # Business logic with overlap validation
 │   │   ├── dto/                # Data transfer objects
 │   │   ├── exception/          # Custom exceptions & global error handler
 │   │   └── config/             # CORS configuration
 │   ├── src/main/resources/
-│   │   └── application.yaml    # Spring configuration
-│   ├── meeting_rooms.db        # SQLite database (auto-created)
+│   │   ├── application.yaml        # Default config (used in Docker)
+│   │   └── application-local.yaml  # Local dev overrides
 │   └── build.gradle            # Build configuration
 └── frontend/                   # React application
     ├── src/
     │   ├── components/         # React components
-    │   ├── services/           # API integration
-    │   ├── constants.js        # Shared constants (API_BASE_URL, ROOM_NAMES)
+    │   ├── services/           # API integration & constants
     │   ├── App.jsx             # Main application component
-    │   ├── main.jsx            # React entry point
-    │   └── index.css           # Global styles
-    ├── public/
-    │   └── index.html          # HTML template
+    │   └── main.jsx            # React entry point
+    ├── nginx.conf              # Nginx config (SPA routing + /api proxy)
     └── package.json            # Dependencies & scripts
 ```
 
 ## Prerequisites
 
-- **Java 25 JDK** (required for Spring Boot 4.0.1)
-- **Node.js** (v18 or higher recommended)
-- **npm** or **yarn** package manager
+- **Java 25 JDK** (required for Spring Boot 4)
+- **Node.js** (v18 or higher)
+- **npm** package manager
 
-## Setup Instructions
+## Local Development
 
-### Backend Setup
+### Backend
 
-1. **Navigate to backend directory:**
-   ```bash
-   cd backend
-   ```
+```bash
+cd backend
+SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
+```
 
-2. **Build the project:**
-   ```bash
-   ./gradlew build
-   ```
-   *(On Windows: `gradlew.bat build`)*
+The backend starts on `http://localhost:8080`. The SQLite database (`meeting_rooms.db`) is created automatically in the `backend/` directory.
 
-3. **Run the Spring Boot application:**
-   ```bash
-   ./gradlew bootRun
-   ```
-   *(On Windows: `gradlew.bat bootRun`)*
+### Frontend
 
-   The backend will start on `http://localhost:8080`
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-   **Note:** The SQLite database (`meeting_rooms.db`) will be automatically created in the backend directory on first run. The database schema will be updated automatically via JPA.
-
-#### Backend Details
-
-- **Framework**: Spring Boot 4.0.1 with Java 25
-- **Database**: SQLite with Hibernate ORM
-- **API**: RESTful endpoints with comprehensive error handling
-- **CORS**: Configured globally for frontend access
-- **Validation**: Business rules enforced on the backend
-- **Error Handling**: Structured error responses with proper HTTP status codes
-- **Logging**: Comprehensive logging with SLF4J and Lombok
-
-### Frontend Setup
-
-1. **Navigate to frontend directory:**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-   The frontend will start on `http://localhost:5173`
-
-#### Frontend Details
-
-- **Framework**: React 19 with modern hooks
-- **Build Tool**: Vite for fast development and optimized production builds
-- **Styling**: Tailwind CSS 4.x for utility-first CSS
-- **State Management**: React useState/useEffect hooks
-- **Validation**: Client-side validation with user-friendly error messages
-- **Constants**: Centralized configuration for API URLs and room names
+The frontend starts on `http://localhost:5173`. Vite proxies `/api/*` to `localhost:8080`.
 
 ## Usage
 
@@ -184,7 +139,7 @@ Creates a new booking.
 ```json
 {
   "status": 400,
-  "message": "Description is required."
+  "message": "This room is already booked for the selected time slot."
 }
 ```
 
@@ -196,22 +151,17 @@ Cancels a booking by ID.
 ## Validation Rules
 
 ### Frontend Validation
-- Description is required
-- Description must be at least 3 characters long
+- Description is required and must be at least 3 characters
 - End time must be after start time
 - Cannot book for past times/dates
 - Cannot cancel past bookings
 
 ### Backend Validation
-- Description validation (required, minimum length)
-- Time validation (end > start)
-- Room name validation (must be a configured room)
-- Overlap prevention (no double-booking same room/time)
-- Date/time format validation
+- Overlap prevention — no double-booking the same room at the same time
 
 ## Database Schema
 
-The application uses SQLite with automatic schema management via JPA/Hibernate. The main `bookings` table structure:
+The application uses SQLite with automatic schema management via JPA/Hibernate.
 
 ```sql
 CREATE TABLE bookings (
@@ -224,93 +174,67 @@ CREATE TABLE bookings (
 );
 ```
 
-**Note:** The database schema will be automatically created/updated when the application starts. If upgrading from an older version, the schema migration will handle data conversion.
+## Production Deployment (DigitalOcean Droplet)
 
-## Development Notes
+Build images locally and push to Docker Hub, then pull and run on the droplet. No docker-compose needed.
 
-- **Backend**: Spring Boot 4.0.1 with Java 25, using modern JVM features
-- **Frontend**: React 19 with modern hooks and concurrent features
-- **Database**: SQLite for simplicity, easily replaceable with PostgreSQL/MySQL for production
-- **Styling**: Tailwind CSS v4 with JIT compilation
-- **Build**: Vite for fast development builds and optimized production bundles
-- **Code Quality**: ESLint configuration for consistent code style
-- **CORS**: Configured to allow frontend development server access
-- **Configuration**: Room names, API URLs, and time slots are configurable constants
-- **Error Handling**: Comprehensive error messages for better UX
-- **Logging**: Structured logging with SLF4J and Lombok annotations
-
-## Production Deployment (DigitalOcean)
-
-Frontend and backend run as separate Docker containers on the same droplet. Host Nginx routes traffic between them.
-
-### Traffic flow on the droplet
+### Traffic flow
 
 ```
-Internet → Host Nginx (port 80/443)
-              ├── /api/*  → backend container (port 8080)
-              └── /*      → frontend container (port 3000)
+Browser → Frontend Nginx container (port 80)
+              ├── /api/*  → proxied to backend container (Docker network, port 8080)
+              └── /*      → serves static React SPA
 ```
 
-### Backend container
+The frontend Nginx container handles both static file serving and API proxying — no host-level Nginx or docker-compose required.
+
+### Build & push (local machine)
 
 ```bash
+# Backend
 cd backend
-docker build -t yourdockerhubuser/meeting-room-backend:latest .
-docker push yourdockerhubuser/meeting-room-backend:latest
+docker build -t tharinda1998/my-backend:latest .
+docker push tharinda1998/my-backend:latest
 
-# On the droplet:
-docker pull yourdockerhubuser/meeting-room-backend:latest
-docker run -d --name backend \
-  -p 8080:8080 \
-  -v /opt/meeting-rooms/data:/app/data \
-  -e SPRING_PROFILES_ACTIVE=prod-digitalocean \
-  yourdockerhubuser/meeting-room-backend:latest
+# Frontend
+cd frontend
+docker build -t tharinda1998/my-frontend:latest .
+docker push tharinda1998/my-frontend:latest
 ```
 
-The SQLite database is persisted to `/opt/meeting-rooms/data` on the host.
-
-### Frontend container
+### Run on the droplet
 
 ```bash
-cd frontend
-docker build -t yourdockerhubuser/meeting-room-frontend:latest .
-docker push yourdockerhubuser/meeting-room-frontend:latest
+# Create shared network (once)
+docker network create app-network
 
-# On the droplet:
-docker pull yourdockerhubuser/meeting-room-frontend:latest
-docker run -d --name frontend \
-  -p 3000:80 \
-  yourdockerhubuser/meeting-room-frontend:latest
+# Pull images
+docker pull tharinda1998/my-backend:latest
+docker pull tharinda1998/my-frontend:latest
+
+# Start backend (not exposed on host ports — only reachable via Docker network)
+docker run -d \
+  --name backend \
+  --network app-network \
+  -v /app/data:/app/data \
+  tharinda1998/my-backend:latest
+
+# Start frontend (port 80 exposed to the internet)
+docker run -d \
+  --name frontend \
+  --network app-network \
+  -p 80:80 \
+  tharinda1998/my-frontend:latest
 ```
 
-No environment variables required — the frontend uses `/api` as a relative URL, so the browser resolves API calls against the same host where Nginx handles routing.
+The SQLite database is persisted to `/app/data` on the droplet host via the volume mount.
 
-### Host Nginx configuration (on the droplet)
+### Redeploying after changes
 
-```nginx
-server {
-    listen 80;
-    server_name <your-droplet-ip-or-domain>;
-
-    location /api/ {
-        proxy_pass http://localhost:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
+```bash
+docker stop backend frontend
+docker rm backend frontend
+docker pull tharinda1998/my-backend:latest
+docker pull tharinda1998/my-frontend:latest
+# then re-run the docker run commands above
 ```
-
-### Spring Boot profiles
-
-| Profile | Use |
-|---|---|
-| `local` | Local dev (CORS allows `localhost:5173`) |
-| `docker` | Docker Compose local setup |
-| `prod-digitalocean` | DigitalOcean droplet |
-| `prod-flyio` | Fly.io |

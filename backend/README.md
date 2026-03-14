@@ -13,34 +13,50 @@ Spring Boot 4 REST API backed by SQLite, serving all endpoints under `/api`.
 
 On Windows use `gradlew.bat` instead of `./gradlew`.
 
+Run with the `local` profile to enable SQL logging:
+
+```bash
+SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
+```
+
 The SQLite database (`meeting_rooms.db`) is created automatically in the working directory on first run. Schema is managed by Hibernate (`ddl-auto: update`).
 
 ## Configuration profiles
 
 | Profile | Activate with | Notes |
 |---|---|---|
-| `local` | default | SQL logging on, CORS open |
-| `docker` | `SPRING_PROFILES_ACTIVE=docker` | for Docker Compose local |
-| `prod-digitalocean` | `SPRING_PROFILES_ACTIVE=prod-digitalocean` | DigitalOcean droplet |
-| `prod-flyio` | `SPRING_PROFILES_ACTIVE=prod-flyio` | Fly.io |
+| `local` | `SPRING_PROFILES_ACTIVE=local` | SQL logging on, DB at `meeting_rooms.db` (relative path) |
+| *(none)* | default (no env var) | Used in Docker — DB at `/app/data/meeting_rooms.db` |
 
-Profile-specific YAML files in `src/main/resources/` override `application.yaml`.
+Profile config files in `src/main/resources/`:
+- `application.yaml` — defaults (used in Docker)
+- `application-local.yaml` — overrides for local dev
 
 ## Docker
 
-```bash
-docker build -t yourdockerhubuser/meeting-room-backend:latest .
-docker push yourdockerhubuser/meeting-room-backend:latest
+Build and push:
 
-# On the droplet:
-docker run -d --name backend \
-  -p 8080:8080 \
-  -v /opt/meeting-rooms/data:/app/data \
-  -e SPRING_PROFILES_ACTIVE=prod-digitalocean \
-  yourdockerhubuser/meeting-room-backend:latest
+```bash
+cd backend
+docker build -t tharinda1998/my-backend:latest .
+docker push tharinda1998/my-backend:latest
 ```
 
-The image uses a two-stage build (JDK 25 builder → JRE 25 runtime). SQLite is persisted via the volume mounted to `/app/data`. JVM is capped at 256 MB (`-Xmx256m`).
+Pull and run on the droplet (no docker-compose needed):
+
+```bash
+# Create a shared network (once)
+docker network create app-network
+
+docker pull tharinda1998/my-backend:latest
+docker run -d \
+  --name backend \
+  --network app-network \
+  -v /app/data:/app/data \
+  tharinda1998/my-backend:latest
+```
+
+The SQLite database is persisted to `/app/data` on the host via the volume. No `SPRING_PROFILES_ACTIVE` needed — the default `application.yaml` is used in Docker and already points to `/app/data/meeting_rooms.db`.
 
 > **Note:** The two JVM flags `--enable-native-access=ALL-UNNAMED` and `--sun-misc-unsafe-memory-access=allow` are required for SQLite on Java 25 and are already baked into the Dockerfile `ENTRYPOINT`.
 
@@ -80,7 +96,7 @@ All routes are prefixed with `/api` (set via `server.servlet.context-path`).
 ```
 com.example.demo/
 ├── controller/   BookingController — maps HTTP to service calls
-├── service/      BookingService — validation & business rules
+├── service/      BookingService — overlap validation & business rules
 ├── repository/   BookingRepository — JPA data access
 ├── entity/       Booking — JPA entity
 ├── dto/          BookingRequest, ErrorResponse
