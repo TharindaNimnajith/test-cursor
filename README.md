@@ -215,15 +215,14 @@ docker pull tharinda1998/my-frontend:latest
 # Start backend (not exposed on host ports — only reachable via Docker network)
 docker run -d \
   --name backend \
-  --network app-network \
+  -p 127.0.0.1:8080:8080 \
   -v /app/data:/app/data \
   tharinda1998/my-backend:latest
 
 # Start frontend (port 80 exposed to the internet)
 docker run -d \
   --name frontend \
-  --network app-network \
-  -p 80:80 \
+  -p 127.0.0.1:3000:80 \
   tharinda1998/my-frontend:latest
 ```
 
