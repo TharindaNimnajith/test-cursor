@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ROOM_NAMES } from '../constants';
+import { ROOM_NAMES } from '../services/constants';
 
 function BookingForm({ date, onCreateBooking }) {
   const [roomName, setRoomName] = useState(ROOM_NAMES[0]);

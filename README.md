@@ -239,23 +239,78 @@ CREATE TABLE bookings (
 - **Error Handling**: Comprehensive error messages for better UX
 - **Logging**: Structured logging with SLF4J and Lombok annotations
 
-## Production Deployment
+## Production Deployment (DigitalOcean)
 
-1. **Build the frontend:**
-   ```bash
-   cd frontend && npm run build
-   ```
+Frontend and backend run as separate Docker containers on the same droplet. Host Nginx routes traffic between them.
 
-2. **Copy built files** to `backend/src/main/resources/static/` for Spring Boot to serve them
+### Traffic flow on the droplet
 
-3. **Build the backend:**
-   ```bash
-   cd backend && ./gradlew bootJar
-   ```
+```
+Internet → Host Nginx (port 80/443)
+              ├── /api/*  → backend container (port 8080)
+              └── /*      → frontend container (port 3000)
+```
 
-4. **Run the JAR:**
-   ```bash
-   java -jar build/libs/meeting-room-booking-system-1.0.0.jar
-   ```
+### Backend container
 
-The application will be available at `http://localhost:8080` with both frontend and backend served from the same port.
+```bash
+cd backend
+docker build -t yourdockerhubuser/meeting-room-backend:latest .
+docker push yourdockerhubuser/meeting-room-backend:latest
+
+# On the droplet:
+docker pull yourdockerhubuser/meeting-room-backend:latest
+docker run -d --name backend \
+  -p 8080:8080 \
+  -v /opt/meeting-rooms/data:/app/data \
+  -e SPRING_PROFILES_ACTIVE=prod-digitalocean \
+  yourdockerhubuser/meeting-room-backend:latest
+```
+
+The SQLite database is persisted to `/opt/meeting-rooms/data` on the host.
+
+### Frontend container
+
+```bash
+cd frontend
+docker build -t yourdockerhubuser/meeting-room-frontend:latest .
+docker push yourdockerhubuser/meeting-room-frontend:latest
+
+# On the droplet:
+docker pull yourdockerhubuser/meeting-room-frontend:latest
+docker run -d --name frontend \
+  -p 3000:80 \
+  yourdockerhubuser/meeting-room-frontend:latest
+```
+
+No environment variables required — the frontend uses `/api` as a relative URL, so the browser resolves API calls against the same host where Nginx handles routing.
+
+### Host Nginx configuration (on the droplet)
+
+```nginx
+server {
+    listen 80;
+    server_name <your-droplet-ip-or-domain>;
+
+    location /api/ {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+### Spring Boot profiles
+
+| Profile | Use |
+|---|---|
+| `local` | Local dev (CORS allows `localhost:5173`) |
+| `docker` | Docker Compose local setup |
+| `prod-digitalocean` | DigitalOcean droplet |
+| `prod-flyio` | Fly.io |

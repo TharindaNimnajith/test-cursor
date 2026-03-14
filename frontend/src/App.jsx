@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import DatePicker from './components/DatePicker';
 import AvailabilityGrid from './components/AvailabilityGrid';
 import BookingForm from './components/BookingForm';
@@ -10,7 +10,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const loadBookings = async () => {
+  const loadBookings = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -21,19 +21,15 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [date]);
 
   useEffect(() => {
     loadBookings();
-  }, [date]);
+  }, [loadBookings]);
 
   const handleCreateBooking = async (bookingData) => {
-    try {
-      await api.createBooking(bookingData);
-      await loadBookings();
-    } catch (err) {
-      throw err;
-    }
+    await api.createBooking(bookingData);
+    await loadBookings();
   };
 
   const handleCancelBooking = async (id) => {

@@ -36,4 +36,5 @@ EXPOSE 8080
 
 # Use JVM flags and environment variable for Spring profile
 # SPRING_PROFILES_ACTIVE will be injected from docker-compose.yml
-ENTRYPOINT ["sh", "-c", "java --enable-native-access=ALL-UNNAMED --sun-misc-unsafe-memory-access=allow -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar"]
+# ENTRYPOINT ["sh", "-c", "java --enable-native-access=ALL-UNNAMED --sun-misc-unsafe-memory-access=allow -Dspring.profiles.active=$SPRING_PROFILES_ACTIVE -jar app.jar"]
+ENTRYPOINT ["java", "-Xms128m", "-Xmx256m", "--enable-native-access=ALL-UNNAMED", "--sun-misc-unsafe-memory-access=allow", "-jar", "app.jar"]

@@ -3,7 +3,3 @@
 spring:
   jpa:
     show-sql: true  # Show SQL statements in logs for debugging
-
-app:
-  cors:
-    allowed-origin: http://localhost:5173  # Frontend origin allowed for CORS

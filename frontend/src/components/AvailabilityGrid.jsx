@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ROOM_NAMES, TIME_GRID_START_HOUR, TIME_GRID_END_HOUR, SLOT_DURATION_MINUTES } from '../constants';
+import { ROOM_NAMES, TIME_GRID_START_HOUR, TIME_GRID_END_HOUR, SLOT_DURATION_MINUTES } from '../services/constants';
 
 function AvailabilityGrid({ date, bookings, onCancelBooking }) {
   const [currentTime, setCurrentTime] = useState(null);

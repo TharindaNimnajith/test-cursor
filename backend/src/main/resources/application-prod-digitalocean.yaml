@@ -1,5 +1,0 @@
-# Production environment configuration overrides for DigitalOcean
-
-app:
-  cors:
-    allowed-origin: https://<your-droplet-domain-or-ip>.com  # Frontend origin allowed for CORS

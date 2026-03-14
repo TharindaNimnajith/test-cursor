@@ -1,5 +1,0 @@
-# Production environment configuration overrides for fly.io
-
-app:
-  cors:
-    allowed-origin: https://meeting-room-frontend.fly.dev  # Frontend origin allowed for CORS
